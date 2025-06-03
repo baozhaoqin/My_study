@@ -1,0 +1,5 @@
+参考来源:
+https://www.showmeai.tech/article-detail/170
+1. 引言
+  尽管大部分人使用 Hadoop 都是用 java 完成，但是 Hadoop 程序可以用 Python、C++、ruby 等完成。本示例教大家用 Python 完成 MapReduce 实例统计输入文件的单词的词频。
+2. Python实现 MapReduce 代码
