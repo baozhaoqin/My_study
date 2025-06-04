@@ -32,3 +32,39 @@ class Solution:
             # 如果当前节点有右子节点，则将右子节点加入队列中
             if node.right: queue.append(node.right)
         return res
+
+Leetcode LCR 150.彩灯装饰记录 II
+相较于上一题，这一题多要求了每一层的节点值，也是属于二叉树的广度优先搜索，其通常借助 队列 的先入先出特性来实现。
+
+import collections
+class TreeNode(object):
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+class Solution(object):
+    def decorateRecord(self, root):
+        # 特殊化处理空树的情况
+        if not root : return []
+        # 初始化结果列表和队列
+        result = []
+        queue = collections.deque()
+        # 将根节点加入队列
+        queue.append(root)
+        # 开始层序遍历，如果队列不为空，则继续遍历
+        while queue:
+            # 初始化临时列表，用于存储当前层的节点值
+            tmp = []
+            # 遍历当前层的所有节点
+            for _ in range(len(queue)):
+                # 弹出队列的第一个元素
+                node = queue.popleft()
+                # 将当前节点的值加入临时列表
+                tmp.append(node.val)
+                # 如果左子节点不为空，则将左子节点加入队列
+                if node.left : queue.append(node.left)
+                # 如果右子节点不为空，则将右子节点加入队列
+                if node.right : queue.append(node.right)
+            # 将临时列表加入结果列表，也就是将当前层的所有节点值加入结果列表
+            result.append(tmp)
+        return result
