@@ -68,3 +68,44 @@ class Solution(object):
             # 将临时列表加入结果列表，也就是将当前层的所有节点值加入结果列表
             result.append(tmp)
         return result
+
+Leetcode LCR 151.彩灯装饰记录 III
+相较于上一题，这一题要求了偶数层的翻转，也是属于二叉树的广度优先搜索，借助了反转标志来完成
+
+class TreeNode(object):
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+import collections
+class Solution(object):
+    def decorateRecord(self, root):
+        # 特殊情况处理
+        if not root : return []
+        # 初始化结果列表和队列
+        res, queue = [],collections.deque()
+        # 将根节点加入队列
+        queue.append(root)
+        # 初始化反转标志
+        reverse = False
+        while queue:
+            # 初始化临时列表存储当前层节点值
+            tmp = []
+            for _ in range(len(queue)):
+                # 弹出队列左节点
+                node = queue.popleft()
+                # 将节点值加入临时列表
+                tmp.append(node.val)
+                # 将左右子节点加入队列
+                if node.left : queue.append(node.left)
+                if node.right : queue.append(node.right)
+            # 反转标志为False时，直接加入结果列表
+            if not reverse:
+                res.append(tmp)
+                reverse = True
+            # 反转标志为True时，将临时列表反转后加入结果列表
+            else:
+                res.append(tmp[::-1])
+                reverse = False
+        return res
+
