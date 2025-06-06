@@ -1,0 +1,117 @@
+1.树的遍历
+  1.1二叉树的前序遍历
+    1.1.1递归法
+    class TreeNode(object):
+      def __init__(self, val=0, left=None, right=None):
+          self.val = val
+          self.left = left
+          self.right = right
+    class Solution(object):
+        def preorderTraversal(self, root):
+            # 定义一个列表存储遍历结果
+            self.result = []
+            self.traversal(root)
+            return self.result
+        def traversal(self, node):
+            # 终止条件
+            if not node : return
+            # 前序遍历：根节点 -> 左子树 -> 右子树
+            self.result.append(node.val)
+            self.traversal(node.left)
+            self.traversal(node.right)
+  1.2二叉树的中序遍历
+    1.2.1递归法
+    class TreeNode(object):
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+    class Solution(object):
+        def inorderTraversal(self, root):
+            # 定义一个列表来存放遍历的结果
+            self.result = []
+            self.tarversal(root)
+            return self.result
+        # 递归函数
+        def traversal(self, node):
+            if not node:return
+            # 中序遍历 ：左-根-右
+            self.tarversal(node.left)
+            self.result.append(node.val)
+            self.tarversal(node.right)
+  1.3二叉树的后序遍历
+    1.3.1递归法
+    class TreeNode(object):
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+    class Solution(object):
+        def postorderTraversal(self, root):
+            # 定义一个结果列表
+            self.result = []
+            self.traversal(root)
+            return self.result
+        # 递归函数
+        def traversal(self, node):
+            # 递归终止条件
+            if node is None:return 
+            # 后序遍历：左->右->根
+            self.traversal(node.left)
+            self.traversal(node.right)
+            self.result.append(node.val)
+  1.4二叉树的层序遍历
+    1.4.1迭代法（利用了队列的先进先出特性）
+    class TreeNode(object):
+        def __init__(self, val=0, left=None, right=None):
+            self.val = val
+            self.left = left
+            self.right = right
+    class Solution(object):
+        def levelOrder(self, root):
+            # 特殊处理
+            if not root:return []
+            # 初始化队列与结果列表，这里要注意的是队列的初始化要先加入根节点
+            res,queue=[],[root]
+            # 遍历队列，直到队列为空
+            while queue:
+                # 初始化临时列表，用于存储当前层的节点值
+                tmp = []
+                # 遍历当前层的所有节点
+                for _ in range(len(queue)):
+                    # 弹出队列中的第一个元素，赋值给变量node
+                    node=queue.pop(0)
+                    # 将当前节点的值添加到结果列表中
+                    tmp.append(node.val)
+                    # 如果当前节点有左子节点，将左子节点添加到队列中
+                    if node.left:
+                        queue.append(node.left)
+                    # 如果当前节点有右子节点，将右子节点添加到队列中
+                    if node.right:
+                        queue.append(node.right)
+                res.append(tmp)
+            return res
+2.运用递归解决问题
+  2.1二叉树的最大深度
+    2.1.1自底向上解法，后序遍历
+    解决这道问题前，要先理解什么是深度，什么是高度。
+    关键所在：根节点的高度就是这颗二叉树的最大深度
+    class TreeNode(object):
+      def __init__(self, val=0, left=None, right=None):
+          self.val = val
+          self.left = left
+          self.right = right
+    class Solution(object):
+        def maxDepth(self, root):
+            # 自底向上的解法，后序遍历
+            return self.isHeight(root)
+        def isHeight(self, node):
+            # 递归终止条件，同时也是空节点的高度0
+            if not node : return 0
+            # 递归求解左右子树的高度，取最大值加1作为当前节点的高度
+            left_height = self.isHeight(node.left)
+            right_height = self.isHeight(node.right)
+            # 当前节点的高度，加一是下一层的高度返回后，当前层的高度就要加一，才是当前节点的真实高度
+            height = 1 + max(left_height, right_height)
+            return height
+    
