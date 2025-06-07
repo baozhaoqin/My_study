@@ -1,0 +1,348 @@
+参考：hello算法
+1.二叉树（binary tree）
+  1.1
+  定义：二叉树（binary tree）是一种非线性数据结构，代表“祖先”与“后代”之间的派生关系，体现了“一分为二”的分治逻辑。与链表类似，二叉树的基本单元是节点，每个节点包含值、左子节点引用和右子节点引用。
+  class TreeNode:
+      """二叉树节点类"""
+      def __init__(self, val: int):
+          self.val: int = val                # 节点值
+          self.left: TreeNode | None = None  # 左子节点引用
+          self.right: TreeNode | None = None # 右子节点引用
+  1.2二叉树常见术语
+  节点所在的层（level）：从顶至底递增，根节点所在层为 1 。
+  节点的度（degree）：节点的子节点的数量。在二叉树中，度的取值范围是 0、1、2 。
+  二叉树的高度（height）：从根节点到最远叶节点所经过的边的数量。
+  节点的深度（depth）：从根节点到该节点所经过的边的数量。
+  节点的高度（height）：从距离该节点最远的叶节点到该节点所经过的边的数量。
+  tip：
+  请注意，我们通常将“高度”和“深度”定义为“经过的边的数量”，但有些题目或教材可能会将其定义为“经过的节点的数量”。在这种情况下，高度和深度都需要加 1 。
+  1.3二叉树基本操作
+  插入与删除节点，可以通过修改指针来实现的。
+  tip：
+  需要注意的是，插入节点可能会改变二叉树的原有逻辑结构，而删除节点通常意味着删除该节点及其所有子树。因此，在二叉树中，插入与删除通常是由一套操作配合完成的，以实现有实际意义的操作。
+  1.4常见二叉树类型
+    1.4.1完美二叉树
+    完美二叉树（perfect binary tree）所有层的节点都被完全填满。
+    tip：
+    请注意，在中文社区中，完美二叉树常被称为满二叉树。
+    1.4.2完全二叉树
+    完全二叉树（complete binary tree）仅允许最底层的节点不完全填满，且最底层的节点必须从左至右依次连续填充。
+    请注意，完美二叉树也是一棵完全二叉树。
+    1.4.3完满二叉树
+    完满二叉树（full binary tree）除了叶节点之外，其余所有节点都有两个子节点。
+    特点：所有节点的度都为0或者2
+    1.4.4平衡二叉树
+    平衡二叉树（balanced binary tree）中任意节点的左子树和右子树的高度之差的绝对值不超过 1 。
+  1.5二叉树的退化
+  当二叉树的每层节点都被填满时，达到“完美二叉树”；而当所有节点都偏向一侧时，二叉树退化为“链表”。
+  完美二叉树是理想情况，可以充分发挥二叉树“分治”的优势。
+  链表则是另一个极端，各项操作都变为线性操作，时间复杂度退化至O（n） 。
+2.二叉树的遍历
+  2.1层序遍历
+  层序遍历（level-order traversal）从顶部到底部逐层遍历二叉树，并在每一层按照从左到右的顺序访问节点。
+  层序遍历本质上属于广度优先遍历（breadth-first traversal），也称广度优先搜索（breadth-first search, BFS），它体现了一种“一圈一圈向外扩展”的逐层遍历方式。
+  
+  def level_order(root: TreeNode | None) -> list[int]:
+      """层序遍历"""
+      # 初始化队列，加入根节点
+      queue: deque[TreeNode] = deque()
+      queue.append(root)
+      # 初始化一个列表，用于保存遍历序列
+      res = []
+      while queue:
+          node: TreeNode = queue.popleft()  # 队列出队
+          res.append(node.val)  # 保存节点值
+          if node.left is not None:
+              queue.append(node.left)  # 左子节点入队
+          if node.right is not None:
+              queue.append(node.right)  # 右子节点入队
+      return res
+  2.2前序、中序、后序遍历
+  相应地，前序、中序和后序遍历都属于深度优先遍历（depth-first traversal），也称深度优先搜索（depth-first search, DFS），它体现了一种“先走到尽头，再回溯继续”的遍历方式。
+  深度优先搜索通常基于递归实现：
+  def pre_order(root: TreeNode | None):
+      """前序遍历"""
+      if root is None:
+          return
+      # 访问优先级：根节点 -> 左子树 -> 右子树
+      res.append(root.val)
+      pre_order(root=root.left)
+      pre_order(root=root.right)
+
+  def in_order(root: TreeNode | None):
+      """中序遍历"""
+      if root is None:
+          return
+      # 访问优先级：左子树 -> 根节点 -> 右子树
+      in_order(root=root.left)
+      res.append(root.val)
+      in_order(root=root.right)
+  
+  def post_order(root: TreeNode | None):
+      """后序遍历"""
+      if root is None:
+          return
+      # 访问优先级：左子树 -> 右子树 -> 根节点
+      post_order(root=root.left)
+      post_order(root=root.right)
+      res.append(root.val)
+  tip：
+  深度优先搜索也可以基于迭代实现。
+3.二叉树数组表示
+  在链表表示下，二叉树的存储单元为节点 TreeNode ，节点之间通过指针相连接。
+  那么，我们能否用数组来表示二叉树呢？答案是肯定的。
+  3.1表示完美二叉树
+  先分析一个简单案例。给定一棵完美二叉树，我们将所有节点按照层序遍历的顺序存储在一个数组中，则每个节点都对应唯一的数组索引。
+  根据层序遍历的特性，我们可以推导出父节点索引与子节点索引之间的“映射公式”：若某节点的索引为i，则该节点的左子节点索引为2i+1，右子节点索引为2i+2。
+  映射公式的角色相当于链表中的节点引用（指针）。给定数组中的任意一个节点，我们都可以通过映射公式来访问它的左（右）子节点。
+  3.2表示任意二叉树
+  完美二叉树是一个特例，在二叉树的中间层通常存在许多 None 。由于层序遍历序列并不包含这些 None ，因此我们无法仅凭该序列来推测 None 的数量和分布位置。这意味着存在多种二叉树结构都符合该层序遍历序列。
+  为了解决此问题，我们可以考虑在层序遍历序列中显式地写出所有 None 。
+  值得说明的是，完全二叉树非常适合使用数组来表示。回顾完全二叉树的定义，None 只出现在最底层且靠右的位置，因此所有 None 一定出现在层序遍历序列的末尾。
+  这意味着使用数组表示完全二叉树时，可以省略存储所有 None ，非常方便。
+
+  以下代码实现了一棵基于数组表示的二叉树，包括以下几种操作。
+  给定某节点，获取它的值、左（右）子节点、父节点。
+  获取前序遍历、中序遍历、后序遍历、层序遍历序列。
+
+  class ArrayBinaryTree:
+      """数组表示下的二叉树类"""
+  
+      def __init__(self, arr: list[int | None]):
+          """构造方法"""
+          self._tree = list(arr)
+  
+      def size(self):
+          """列表容量"""
+          return len(self._tree)
+  
+      def val(self, i: int) -> int | None:
+          """获取索引为 i 节点的值"""
+          # 若索引越界，则返回 None ，代表空位
+          if i < 0 or i >= self.size():
+              return None
+          return self._tree[i]
+  
+      def left(self, i: int) -> int | None:
+          """获取索引为 i 节点的左子节点的索引"""
+          return 2 * i + 1
+  
+      def right(self, i: int) -> int | None:
+          """获取索引为 i 节点的右子节点的索引"""
+          return 2 * i + 2
+  
+      def parent(self, i: int) -> int | None:
+          """获取索引为 i 节点的父节点的索引"""
+          return (i - 1) // 2
+  
+      def level_order(self) -> list[int]:
+          """层序遍历"""
+          self.res = []
+          # 直接遍历数组
+          for i in range(self.size()):
+              if self.val(i) is not None:
+                  self.res.append(self.val(i))
+          return self.res
+  
+      def dfs(self, i: int, order: str):
+          """深度优先遍历"""
+          if self.val(i) is None:
+              return
+          # 前序遍历
+          if order == "pre":
+              self.res.append(self.val(i))
+          self.dfs(self.left(i), order)
+          # 中序遍历
+          if order == "in":
+              self.res.append(self.val(i))
+          self.dfs(self.right(i), order)
+          # 后序遍历
+          if order == "post":
+              self.res.append(self.val(i))
+  
+      def pre_order(self) -> list[int]:
+          """前序遍历"""
+          self.res = []
+          self.dfs(0, order="pre")
+          return self.res
+  
+      def in_order(self) -> list[int]:
+          """中序遍历"""
+          self.res = []
+          self.dfs(0, order="in")
+          return self.res
+  
+      def post_order(self) -> list[int]:
+          """后序遍历"""
+          self.res = []
+          self.dfs(0, order="post")
+          return self.res
+  3.3优点与局限性
+  二叉树的数组表示主要有以下优点。
+  数组存储在连续的内存空间中，对缓存友好，访问与遍历速度较快。
+  不需要存储指针，比较节省空间。
+  允许随机访问节点。
+
+  然而，数组表示也存在一些局限性。
+  数组存储需要连续内存空间，因此不适合存储数据量过大的树。
+  增删节点需要通过数组插入与删除操作实现，效率较低。
+  当二叉树中存在大量 None 时，数组中包含的节点数据比重较低，空间利用率较低。
+4.二叉搜索树
+  二叉搜索树（binary search tree）满足以下条件。
+  1.对于根节点，左子树中所有节点的值<根节点的值<右子树中所有节点的值。
+  2.任意节点的左、右子树也是二叉搜索树，即同样满足条件 1.
+  4.1二叉搜索树的操作
+    4.1.1查找节点
+    给定目标节点值 num ，可以根据二叉搜索树的性质来查找。
+    1.若 cur.val < num ，说明目标节点在 cur 的右子树中，因此执行 cur = cur.right 。
+    2.若 cur.val > num ，说明目标节点在 cur 的左子树中，因此执行 cur = cur.left 。
+    3.若 cur.val = num ，说明找到目标节点，跳出循环并返回该节点。
+    二叉搜索树的查找操作与二分查找算法的工作原理一致，都是每轮排除一半情况。
+    示例代码如下：
+    def search(self, num: int) -> TreeNode | None:
+        """查找节点"""
+        cur = self._root
+        # 循环查找，越过叶节点后跳出
+        while cur is not None:
+            # 目标节点在 cur 的右子树中
+            if cur.val < num:
+                cur = cur.right
+            # 目标节点在 cur 的左子树中
+            elif cur.val > num:
+                cur = cur.left
+            # 找到目标节点，跳出循环
+            else:
+                break
+        return cur
+    4.1.2 插入节点
+    给定一个待插入元素 num ，为了保持二叉搜索树“左子树 < 根节点 < 右子树”的性质插入操作流程如下：
+    1.查找插入位置：与查找操作相似，从根节点出发，根据当前节点值和 num 的大小关系循环向下搜索，直到越过叶节点（遍历至 None ）时跳出循环。
+    2.在该位置插入节点：初始化节点 num ，将该节点置于 None 的位置。
+    在代码实现中，需要注意以下两点。
+    二叉搜索树不允许存在重复节点，否则将违反其定义。因此，若待插入节点在树中已存在，则不执行插入，直接返回。
+    为了实现插入节点，我们需要借助节点 pre 保存上一轮循环的节点。这样在遍历至 None 时，我们可以获取到其父节点，从而完成节点插入操作。
+    def insert(self, num: int):
+        """插入节点"""
+        # 若树为空，则初始化根节点
+        if self._root is None:
+            self._root = TreeNode(num)
+            return
+        # 循环查找，越过叶节点后跳出
+        cur, pre = self._root, None
+        while cur is not None:
+            # 找到重复节点，直接返回
+            if cur.val == num:
+                return
+            pre = cur
+            # 插入位置在 cur 的右子树中
+            if cur.val < num:
+                cur = cur.right
+            # 插入位置在 cur 的左子树中
+            else:
+                cur = cur.left
+        # 插入节点
+        node = TreeNode(num)
+        if pre.val < num:
+            pre.right = node
+        else:
+            pre.left = node
+    4.1.3删除节点
+    先在二叉树中查找到目标节点，再将其删除。与插入节点类似，我们需要保证在删除操作完成后，二叉搜索树的“左子树 < 根节点 < 右子树”的性质仍然满足。因此，我们根据目标节点的子节点数量，分 0、1 和 2 三种情况，执行对应的删除节点操作。
+    （1）当待删除节点的度为0时，表示该节点是叶节点，可以直接删除。
+    （2）当待删除节点的度为1时，将待删除节点替换为其子节点即可。
+    （3）当待删除节点的度为2时，我们无法直接删除它，而需要使用一个节点替换该节点。由于要保持二叉搜索树“左子树<根节点<右子树”的性质，因此这个节点可以是右子树的最小节点或左子树的最大节点。
+    假设我们选择右子树的最小节点（中序遍历的下一个节点）
+    （1）找到待删除节点在“中序遍历序列”中的下一个节点，记为 tmp 。
+    （2）用 tmp 的值覆盖待删除节点的值，并在树中递归删除节点 tmp 。
+    def remove(self, num: int):
+        """删除节点"""
+        # 若树为空，直接提前返回
+        if self._root is None:
+            return
+        # 循环查找，越过叶节点后跳出
+        cur, pre = self._root, None
+        while cur is not None:
+            # 找到待删除节点，跳出循环
+            if cur.val == num:
+                break
+            pre = cur
+            # 待删除节点在 cur 的右子树中
+            if cur.val < num:
+                cur = cur.right
+            # 待删除节点在 cur 的左子树中
+            else:
+                cur = cur.left
+        # 若无待删除节点，则直接返回
+        if cur is None:
+            return
+    
+        # 子节点数量 = 0 or 1
+        if cur.left is None or cur.right is None:
+            # 当子节点数量 = 0 / 1 时， child = null / 该子节点
+            child = cur.left or cur.right
+            # 删除节点 cur
+            if cur != self._root:
+                if pre.left == cur:
+                    pre.left = child
+                else:
+                    pre.right = child
+            else:
+                # 若删除节点为根节点，则重新指定根节点
+                self._root = child
+        # 子节点数量 = 2
+        else:
+            # 获取中序遍历中 cur 的下一个节点
+            tmp: TreeNode = cur.right
+            while tmp.left is not None:
+                tmp = tmp.left
+            # 递归删除节点 tmp
+            self.remove(tmp.val)
+            # 用 tmp 覆盖 cur
+            cur.val = tmp.val
+    4.1.4中序遍历有序
+    二叉搜索树的中序遍历序列是升序的。
+    利用中序遍历升序的性质，我们在二叉搜索树中获取有序数据仅需O（n）时间，无须进行额外的排序操作，非常高效。
+  4.2二叉搜索树的效率
+  二叉搜索树的各项操作的时间复杂度都是对数阶，具有稳定且高效的性能。只有在高频添加、低频查找删除数据的场景下，数组比二叉搜索树的效率更高。
+5.AVL 树
+  在“二叉搜索树”章节中我们提到，在多次插入和删除操作后，二叉搜索树可能退化为链表。
+  1962 年 G. M. Adelson-Velsky 和 E. M. Landis 在论文“An algorithm for the organization of information”中提出了 AVL 树。论文中详细描述了一系列操作，确保在持续添加和删除节点后，AVL 树不会退化，从而使得各种操作的时间复杂度保持在O（log n）级别。换句话说，在需要频繁进行增删查改操作的场景中，AVL 树能始终保持高效的数据操作性能，具有很好的应用价值。
+  5.1AVL 树常见术语
+  AVL 树既是二叉搜索树，也是平衡二叉树，同时满足这两类二叉树的所有性质，因此是一种平衡二叉搜索树（balanced binary search tree）。
+    5.1.1节点高度
+    由于 AVL 树的相关操作需要获取节点高度，因此我们需要为节点类添加 height 变量：
+    class TreeNode:
+        """AVL 树节点类"""
+        def __init__(self, val: int):
+            self.val: int = val                 # 节点值
+            self.height: int = 0                # 节点高度
+            self.left: TreeNode | None = None   # 左子节点引用
+            self.right: TreeNode | None = None  # 右子节点引用
+    “节点高度”是指从该节点到它的最远叶节点的距离，即所经过的“边”的数量。需要特别注意的是，叶节点的高度为0，而空节点的高度为-1。我们将创建两个工具函数，分别用于获取和更新节点的高度：
+    def height(self, node: TreeNode | None) -> int:
+        """获取节点高度"""
+        # 空节点高度为 -1 ，叶节点高度为 0
+        if node is not None:
+            return node.height
+        return -1
+    
+    def update_height(self, node: TreeNode | None):
+        """更新节点高度"""
+        # 节点高度等于最高子树高度 + 1
+        node.height = max([self.height(node.left), self.height(node.right)]) + 1
+    5.1.2节点平衡因子
+    节点的平衡因子（balance factor）定义为节点左子树的高度减去右子树的高度，同时规定空节点的平衡因子为0。我们同样将获取节点平衡因子的功能封装成函数，方便后续使用：
+    def balance_factor(self, node: TreeNode | None) -> int:
+        """获取平衡因子"""
+        # 空节点平衡因子为 0
+        if node is None:
+            return 0
+        # 节点平衡因子 = 左子树高度 - 右子树高度
+        return self.height(node.left) - self.height(node.right)
+    tip：
+    设平衡因子为f，则一棵 AVL 树的任意节点的平衡因子皆满足-1 <= f <= 1。
+  5.2AVL 树旋转
+  AVL 树的特点在于“旋转”操作，它能够在不影响二叉树的中序遍历序列的前提下，使失衡节点重新恢复平衡。换句话说，旋转操作既能保持“二叉搜索树”的性质，也能使树重新变为“平衡二叉树”。
+  我们将平衡因子绝对值>1的节点称为“失衡节点”。根据节点失衡情况的不同，旋转操作分为四种：右旋、左旋、先右旋后左旋、先左旋后右旋。下面详细介绍这些旋转操作。
+  
+  
