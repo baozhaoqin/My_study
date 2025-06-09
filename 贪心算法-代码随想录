@@ -1,0 +1,63 @@
+1.贪心算法的理论基础
+*局部最优推出全局最优*
+贪心无套路，总是东一下西一下
+2.分发饼干（455）
+本题解法：先发大饼干满足大胃口的小孩
+class Solution:
+    def findContentChildren(self, g: List[int], s: List[int]) -> int:
+        # 先排序
+        g = sorted(g)
+        s = sorted(s)
+        count = 0
+        # 定义最大的饼干索引
+        index = len(s) - 1
+        # 遍历胃口,从最大的胃口开始
+        for i in range(len(g)-1,-1,-1):
+            # 找到适合胃口的饼干
+            # 注意这里使用的是if语句
+            if index >= 0 and s[index] >= g[i]:
+                count += 1
+                index -= 1
+        return count
+3.摆动序列
+有三种情况需要考虑
+（1）上下有平坡
+（2）首尾元素
+（3）单调有平坡，就是要么前后差值一直为正数或者负数。
+class Solution:
+    def wiggleMaxLength(self, nums: List[int]) -> int:
+        # 特殊情况处理
+        if len(nums) == 1 : return 1
+        # 初始化
+        prediff = 0
+        curdiff = 0
+        # 结果集，初始化为1是考虑到了最后一个点也是作为摆动的
+        result = 1
+        # 循环，减一是由于结果集已经将最后一个点作为了摆动，所以不必到达最后一个点了
+        for i in range(len(nums)-1):
+            curdiff = nums[i+1] - nums[i]
+            if prediff >= 0 and curdiff < 0 or prediff <= 0 and curdiff >0:
+                result += 1
+                # 更新前差值，在这里更新是为了适应摆动的时候，才更新前差值
+                prediff = curdiff 
+        return result
+4.最大子序和
+class Solution:
+    def maxSubArray(self, nums: List[int]) -> int:
+        # 定义存储最大连续和的res变量
+        res = float('-inf')  # 初始化结果为负无穷大
+        # 定义连续和
+        count = 0
+        # 循环
+        for i in range(len(nums)):
+            # 连续和
+            count += nums[i]
+            # 更新最大连续和
+            if count > res : res = count
+            # 如果连续和是负数，则可以选择下一个数作为连续和的起点
+            # 这里连续和等于零，其实也可以作为下一个数作为连续和的起点（只不过数组元素会增加）
+            # 这里直接定义连续和为0，因为下一次循环的时候就会加上下一个数作为起点了
+            if count < 0 : count = 0
+            # if count <= 0 : count = 0
+        return res
+
