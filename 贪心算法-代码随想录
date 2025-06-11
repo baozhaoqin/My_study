@@ -89,6 +89,7 @@ class Solution:
         return False
 7.跳跃游戏 II
 贪心解法有点难理解（先欠着）
+好抽象呀，二刷还是看不懂。
 8.K次取反后最大化的数组和
 class Solution:
     def largestSumAfterKNegations(self, nums: List[int], k: int) -> int:
