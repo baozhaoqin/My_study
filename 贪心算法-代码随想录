@@ -118,5 +118,9 @@ class Solution:
             sum += i
         
         return sum
+9.加油站
 
+10.分发糖果
+11.柠檬水找零
+12.根据身高重建队列
 
