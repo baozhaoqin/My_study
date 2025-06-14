@@ -1,0 +1,47 @@
+1.理论基础
+五部曲
+dp数组以及下标的含义
+递推公式
+dp数组如何初始化
+遍历顺序
+打印dp数组
+2.斐波那契数
+class Solution:
+    def fib(self, n: int) -> int:
+        if n == 0:
+            return 0
+        if n == 1:
+            return 1
+        dp = [0] * n
+        dp[0],dp[1] = 1,1
+        for i in range(2,len(dp)):
+            dp[i] = dp[i-1] + dp[i-2]
+        return dp[n-1]
+3.爬楼梯
+难点怎么推出递推公式
+class Solution:
+    def climbStairs(self, n: int) -> int:
+        if n <= 1:
+            return n
+        # 这样子初始化才是有意义的
+        dp = [0] * (n + 1)
+        dp[1] = 1
+        dp[2] = 2
+        
+        for i in range(3, n + 1):
+            dp[i] = dp[i - 1] + dp[i - 2]
+        
+        return dp[n]
+4.使用最小花费爬楼梯
+class Solution:
+    def minCostClimbingStairs(self, cost: List[int]) -> int:
+        dp = [0] * (len(cost) + 1)
+        dp[0] = 0  # 初始值，表示从起点开始不需要花费体力
+        dp[1] = 0  # 初始值，表示经过第一步不需要花费体力
+        
+        for i in range(2, len(cost) + 1):
+            # 在第i步，可以选择从前一步（i-1）花费体力到达当前步，或者从前两步（i-2）花费体力到达当前步
+            # 选择其中花费体力较小的路径，加上当前步的花费，更新dp数组
+            dp[i] = min(dp[i - 1] + cost[i - 1], dp[i - 2] + cost[i - 2])
+        
+        return dp[len(cost)]  # 返回到达楼顶的最小花费
