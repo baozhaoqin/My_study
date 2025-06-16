@@ -45,3 +45,10 @@ class Solution:
             dp[i] = min(dp[i - 1] + cost[i - 1], dp[i - 2] + cost[i - 2])
         
         return dp[len(cost)]  # 返回到达楼顶的最小花费
+5.不同路径
+
+6.不同路径 II
+
+7.整数拆分
+
+8.不同的二叉搜索树
