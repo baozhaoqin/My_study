@@ -46,9 +46,53 @@ class Solution:
         
         return dp[len(cost)]  # 返回到达楼顶的最小花费
 5.不同路径
-
+class Solution:
+    def uniquePaths(self, m: int, n: int) -> int:
+        # dp数组含义，到达时有多少条路径
+        dp = [[0] * n for _ in range(m)]
+        # 递推公式
+        # dp[i][j] = dp[i-1][j] + dp[i][j-1]
+        # 如何初始化，将第一行与第一列都设为1，因为题意要求只可走左或下
+        for i in range(m):
+            dp[i][0] = 1
+        for j in range(n):
+            dp[0][j] = 1
+        # 遍历顺序，从左往右，从上往下
+        for i in range(1,m):
+            for j in range(1,n):
+                dp[i][j] = dp[i-1][j] + dp[i][j-1]
+        
+        return dp[m-1][n-1]
 6.不同路径 II
-
+class Solution:
+    def uniquePathsWithObstacles(self, obstacleGrid: List[List[int]]) -> int:
+        m = len(obstacleGrid)
+        n = len(obstacleGrid[0])
+        # 特殊情况处理，要么起点有障碍物要么终点有
+        if obstacleGrid[m-1][n-1] == 1 or obstacleGrid[-1][-1] == 1 : return 0
+        # dp数组含义，到达时有多少条路径
+        dp = [[0] * n for _ in range(m)]
+        # 递推公式
+        # dp[i][j] = dp[i-1][j] + dp[i][j-1]
+        # 如何初始化，将第一行与第一列都设为1，因为题意要求只可走左或下
+        for i in range(m):
+            # 增加判断障碍物的条件
+            if obstacleGrid[i][0] == 0:
+                dp[i][0] = 1
+            else : break
+        for j in range(n):
+            # 增加判断障碍物的条件
+            if obstacleGrid[0][j] == 0:
+                dp[0][j] = 1
+            else : break
+        # 遍历顺序，从左往右，从上往下
+        for i in range(1,m):
+            for j in range(1,n):
+                # 增加判断障碍物的条件
+                if obstacleGrid[i][j] == 1:
+                    continue
+                dp[i][j] = dp[i-1][j] + dp[i][j-1]
+        return dp[m-1][n-1]     
 7.整数拆分
 
 8.不同的二叉搜索树
