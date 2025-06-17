@@ -96,3 +96,28 @@ class Solution:
 7.整数拆分
 
 8.不同的二叉搜索树
+
+9.01背包理论基础
+理解dp数组的含义
+递推公式的推导
+10.01背包理论基础（滚动数组）
+注意一下遍历顺序
+11.分割等和子集
+class Solution:
+    def canPartition(self, nums: List[int]) -> bool:
+        # 思路：能够找到加起来等于总和一半的数或者数的总和就说明可以分割
+        # 一维DP
+        total_sum = sum(nums)
+        if total_sum % 2 != 0:
+            return False
+        target_sum = total_sum // 2
+        # DP数组的含义
+        dp = [False] * (target_sum + 1)
+        # 初始化
+        dp[0] = True
+        # 遍历顺序，从后往前
+        for num in nums:
+            # 从target_sum逆序迭代到num，步长为-1
+            for i in range(target_sum, num - 1, -1):
+                dp[i] = dp[i] or dp[i - num]
+        return dp[target_sum]
