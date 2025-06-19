@@ -149,3 +149,30 @@ class Solution:
                 dp[j] += dp[j - num]  # 状态转移方程，累加不同选择方式的数量
         return dp[target_sum]  # 返回达到目标和的方案数
 14.零一和
+15.完全背包理论基础
+def knapsack(n, bag_weight, weight, value):
+    # 这里的n其实是有多少个物品的意思，从0开始，如n=2，就是0,1,2三个物品
+    # 画个图就可以理解这里dp数组的意思了
+    dp = [[0] * (bag_weight + 1) for _ in range(n)]
+
+    # 初始化
+    # 这里也是画个图就可以理解了，遍历物品第一行初始化嘛
+    for j in range(weight[0], bag_weight + 1):
+        # 这里是递推公式，可由前边已知数据推导来
+        dp[0][j] = dp[0][j - weight[0]] + value[0]
+
+    # 动态规划
+    # 先遍历物品，再遍历背包
+    for i in range(1, n):
+        for j in range(bag_weight + 1):
+            # 这里判断此次物品的重量能否放下，放不下的话就取上边
+            if j < weight[i]:
+                dp[i][j] = dp[i - 1][j]
+            # 放的下的话根据左上方与上方的比较得出最大值
+            else:
+                dp[i][j] = max(dp[i - 1][j], dp[i][j - weight[i]] + value[i])
+    # 最优解
+    return dp[n - 1][bag_weight]
+16.零钱兑换II
+
+
