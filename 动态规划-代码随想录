@@ -228,4 +228,72 @@ class Solution:
         return dp[n]
 20.单词拆分
 
+21.打家劫舍
+class Solution:
+    def rob(self, nums: List[int]) -> int:
+        # 特殊情况处理
+        if len(nums) == 1 : return nums[0]
+        # dp数组含义
+        # 下标：i考虑偷该物品，dp[i]偷的最大值
+        # 定义
+        dp = [0] * len(nums)
+        # 递推公式
+        # dp[i] = max(dp[i-1],dp[i-2]+nums[i])
+        # 初始化
+        dp[0] = nums[0]
+        # 这一步挺关键的，可以处理数组只有2个元素的特殊情况
+        dp[1] = max(nums[0],nums[1])
+        # 遍历顺序
+        for i in range(2,len(nums)):
+            dp[i] = max(dp[i-1],dp[i-2]+nums[i])
+            print(dp[i])
+
+        return dp[len(nums)-1]
+22.打家劫舍II
+class Solution:
+    def rob(self, nums: List[int]) -> int:
+        # 特殊情况处理
+        if len(nums) == 1: return nums[0]
+        # 包含头元素的数组
+        firstValue = self.rob01(nums[0:len(nums)-1])
+        secondeValue = self.rob01(nums[1:len(nums)])
+        return max(firstValue,secondeValue)
+
+    def rob01(self, nums) -> int:
+        # 特殊情况处理
+        if len(nums) == 1: return nums[0]
+        # dp数组含义
+        # 下标：i考虑偷该物品，dp[i]偷的最大值
+        # 定义
+        dp = [0] * len(nums)
+        # 递推公式
+        # dp[i] = max(dp[i-1],dp[i-2]+nums[i])
+        # 初始化
+        dp[0] = nums[0]
+        dp[1] = max(nums[0], nums[1])
+        # 遍历顺序
+        for i in range(2, len(nums)):
+            dp[i] = max(dp[i - 1], dp[i - 2] + nums[i])
+            print(dp[i])
+
+        return dp[len(nums) - 1]
+23.打家劫舍 III
+class Solution:
+    def rob(self, root: Optional[TreeNode]) -> int:
+        # 递归加动态规划
+        result = self.robtree(root)
+        return max(result[0],result[1])
+
+    def robtree(self, node):
+        if node == None:
+            return [0,0]
+        # 后序遍历
+        leftdp = self.robtree(node.left)
+        rightdp = self.robtree(node.right)
+        # 偷当前房屋
+        val1 = node.val + leftdp[0] + rightdp[0]
+        # 不偷
+        val2 = max(leftdp[0],leftdp[1]) + max(rightdp[0],rightdp[1])
+        return [val2,val1]
+
 
