@@ -413,5 +413,18 @@ class Solution:
             dp[i][1] = max(dp[i-1][1], prices[i] + dp[i-1][0]-fee)
         return dp[-1][1]
 30.最长递增子序列
-
+class Solution:
+    def lengthOfLIS(self, nums: List[int]) -> int:
+        # dp数组定义
+        dp = [1] * len(nums)
+        # 递推公式
+        # 初始化
+        # 遍历顺序
+        for i in range(1,len(nums)):
+            for j in range(i):
+                if nums[i] > nums[j]:
+                    dp[i] = max(dp[j]+1,dp[i])
+        
+        return max(dp)
+31.最长连续递增序列
 
