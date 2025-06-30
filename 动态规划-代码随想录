@@ -598,3 +598,43 @@ class Solution:
                     dp[i][j] = dp[i-1][j-1]
                 else:
                     dp[i][j] = min(dp[i-1][j]+1,dp[i][j-1]+1,dp[i-1][j-1]+1)
+40.回文子串
+class Solution:
+    def countSubstrings(self, s: str) -> int:
+        length = len(s)
+        if length == 1 : return 1
+
+        dp = [ [False]*length for _ in range(length)]
+
+        count = 0
+
+        for i in range(length-1,-1,-1):
+            for j in range(i,length):
+                if s[i] == s[j]:
+                    if j - i <= 1:
+                        dp[i][j] = True
+                        count += 1
+                    elif dp[i+1][j-1] == True:
+                        dp[i][j] = True
+                        count += 1
+
+        return count
+41.最长回文子序列
+class Solution:
+    def longestPalindromeSubseq(self, s: str) -> int:
+        length = len(s)
+        if length == 1 : return 1
+
+        dp = [ [0] * length for _ in range(length)]
+
+        for i in range(length):
+            dp[i][i] = 1
+        
+        for i in range(length-1,-1,-1):
+            for j in range(i+1,length):
+                if s[i] == s[j]:
+                    dp[i][j] = dp[i+1][j-1] + 2
+                else:
+                    dp[i][j] = max(dp[i][j-1],dp[i+1][j])
+        
+        return dp[0][length-1]
