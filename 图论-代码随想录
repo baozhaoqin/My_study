@@ -1,0 +1,337 @@
+1.岛屿数量（深度优先搜索）
+  1.1
+  direction = [ [0,1], [1,0], [-1,0], [0,-1] ]
+  def dfs(grid,visited,x,y):
+      for i,j in direction:
+          nextX = x + i
+          nextY = y + j
+          if (nextX < 0 or nextX >= len(grid) or nextY < 0 or nextY >= len(grid[0])):
+              continue
+          if grid[nextX][nextY] == 1 and not visited[nextX][nextY]:
+              visited[nextX][nextY] = True
+              dfs(grid,visited,nextX,nextY)
+  def main():
+      N,M = map(int,input().split())
+      grid = [ [0] * M for _ in range(N) ]
+      for i in range(N):
+          row = list(map(int, input().split()))
+          for j in range(M):
+              grid[i][j] = row[j]
+      visited = [ [False] * M for _ in range(N) ]
+      result = 0
+      for i in range(N):
+          for j in range(M):
+              if grid[i][j] == 1 and visited[i][j] == False:
+                  result += 1
+                  visited[i][j] = True
+                  dfs(grid,visited,i,j)
+      print(result)
+  
+  if __name__ == '__main__':
+      main()
+  
+  1.2
+  direction = [[0, 1], [1, 0], [0, -1], [-1, 0]]  # 四个方向：上、右、下、左
+  
+  
+  def dfs(grid, visited, x, y):
+      """
+      对一块陆地进行深度优先遍历并标记
+      """
+      for i, j in direction:
+          next_x = x + i
+          next_y = y + j
+          # 下标越界，跳过
+          if next_x < 0 or next_x >= len(grid) or next_y < 0 or next_y >= len(grid[0]):
+              continue
+          # 未访问的陆地，标记并调用深度优先搜索
+          if not visited[next_x][next_y] and grid[next_x][next_y] == 1:
+              visited[next_x][next_y] = True
+              dfs(grid, visited, next_x, next_y)
+  
+  
+  if __name__ == '__main__':  
+      # 版本一
+      n, m = map(int, input().split())
+      
+      # 邻接矩阵
+      grid = []
+      for i in range(n):
+          grid.append(list(map(int, input().split())))
+      
+      # 访问表
+      visited = [[False] * m for _ in range(n)]
+      
+      res = 0
+      for i in range(n):
+          for j in range(m):
+              # 判断：如果当前节点是陆地，res+1并标记访问该节点，使用深度搜索标记相邻陆地。
+              if grid[i][j] == 1 and not visited[i][j]:
+                  res += 1
+                  visited[i][j] = True
+                  dfs(grid, visited, i, j)
+      
+      print(res)
+2.岛屿数量（广度优先搜索）
+  2.1
+  direction = [ [0,1], [1,0], [-1,0], [0,-1] ]
+  def bfs(grid,visited,x,y):
+      queue = []
+      queue.append((x,y))
+      visited[x][y] = True
+      while queue:
+          cur = queue.pop()
+          for i in range(4):
+              nextX = cur[0] + direction[i][0]
+              nextY = cur[1] + direction[i][1]
+              if (nextX < 0 or nextX >= len(grid) or nextY < 0 or nextY >= len(grid[0])):
+                      continue
+              if grid[nextX][nextY] == 1 and visited[nextX][nextY] == False:
+                  queue.append((nextX,nextY))
+                  visited[nextX][nextY] = True
+  def main():
+      N,M = map(int,input().split())
+      grid = [ [0] * M for _ in range(N) ]
+      for i in range(N):
+          row = list(map(int, input().split()))
+          for j in range(M):
+              grid[i][j] = row[j]
+      visited = [ [False] * M for _ in range(N) ]
+      result = 0
+      for i in range(N):
+          for j in range(M):
+              if grid[i][j] == 1 and visited[i][j] == False:
+                  result += 1
+                  visited[i][j] = True
+                  bfs(grid,visited,i,j)
+      print(result)
+  
+  if __name__ == '__main__':
+      main()
+  2.2
+  from collections import deque
+  directions = [[0, 1], [1, 0], [0, -1], [-1, 0]]
+  def bfs(grid, visited, x, y):
+      que = deque([])
+      que.append([x,y])
+      visited[x][y] = True
+      while que:
+          cur_x, cur_y = que.popleft()
+          for i, j in directions:
+              next_x = cur_x + i
+              next_y = cur_y + j
+              if next_y < 0 or next_x < 0 or next_x >= len(grid) or next_y >= len(grid[0]):
+                  continue
+              if not visited[next_x][next_y] and grid[next_x][next_y] == 1: 
+                  visited[next_x][next_y] = True
+                  que.append([next_x, next_y])
+  
+  
+  def main():
+      n, m = map(int, input().split())
+      grid = []
+      for i in range(n):
+          grid.append(list(map(int, input().split())))
+      visited = [[False] * m for _ in range(n)]
+      res = 0
+      for i in range(n):
+          for j in range(m):
+              if grid[i][j] == 1 and not visited[i][j]:
+                  res += 1
+                  bfs(grid, visited, i, j)
+      print(res)
+  
+  if __name__ == "__main__":
+      main()
+3.岛屿的最大面积
+# 四个方向
+position = [[0, 1], [1, 0], [0, -1], [-1, 0]]
+count = 0
+
+
+def dfs(grid, visited, x, y):
+    """
+    深度优先搜索，对一整块陆地进行标记
+    """
+    global count  # 定义全局变量，便于传递count值
+    for i, j in position:
+        cur_x = x + i
+        cur_y = y + j
+        # 下标越界，跳过
+        if cur_x < 0 or cur_x >= len(grid) or cur_y < 0 or cur_y >= len(grid[0]):
+            continue
+        if not visited[cur_x][cur_y] and grid[cur_x][cur_y] == 1:
+            visited[cur_x][cur_y] = True
+            count += 1
+            dfs(grid, visited, cur_x, cur_y)
+
+
+n, m = map(int, input().split())
+# 邻接矩阵
+grid = []
+for i in range(n):
+    grid.append(list(map(int, input().split())))
+# 访问表
+visited = [[False] * m for _ in range(n)]
+
+result = 0  # 记录最终结果
+for i in range(n):
+    for j in range(m):
+        if grid[i][j] == 1 and not visited[i][j]:
+            count = 1
+            visited[i][j] = True
+            dfs(grid, visited, i, j)
+            result = max(count, result)
+
+print(result)
+4.孤岛的总面积
+direction = [[0, 1], [1, 0], [0, -1], [-1, 0]]
+
+
+def dfs(grid, x, y):
+    grid[x][y] = 0
+    for i in range(4):
+        nextX = x + direction[i][0]
+        nextY = y + direction[i][1]
+        if nextX < 0 or nextX >= len(grid) or nextY < 0 or nextY >= len(grid[0]):
+            continue
+        if grid[nextX][nextY] == 1:
+            dfs(grid, nextX, nextY)
+
+
+def main():
+    N, M = map(int, input().split())
+    grid = [[0] * M for _ in range(N)]
+    for i in range(N):
+        row = list(map(int, input().split()))
+        for j in range(M):
+            grid[i][j] = row[j]
+
+    for i in range(N):
+        if grid[i][0] == 1:
+            dfs(grid, i, 0)
+        if grid[i][M - 1] == 1:
+            dfs(grid, i, M - 1)
+
+    for j in range(M):
+        if grid[0][j] == 1:
+            dfs(grid, 0, j)
+        if grid[N - 1][j] == 1:
+            dfs(grid, N - 1, j)
+
+    count = 0
+    for i in range(N):
+        for j in range(M):
+            if grid[i][j] == 1:
+                count += 1
+    print(count)
+
+if __name__ == '__main__':
+    main()
+5.沉没孤岛
+direction = [[0, 1], [1, 0], [0, -1], [-1, 0]]
+
+
+def dfs(grid, x, y):
+    grid[x][y] = 2
+    for i in range(4):
+        nextX = x + direction[i][0]
+        nextY = y + direction[i][1]
+        if nextX < 0 or nextX >= len(grid) or nextY < 0 or nextY >= len(grid[0]):
+            continue
+        if grid[nextX][nextY] == 1:
+            dfs(grid, nextX, nextY)
+
+
+def main():
+    N, M = map(int, input().split())
+    grid = [[0] * M for _ in range(N)]
+    for i in range(N):
+        row = list(map(int, input().split()))
+        for j in range(M):
+            grid[i][j] = row[j]
+
+    for i in range(N):
+        if grid[i][0] == 1:
+            dfs(grid, i, 0)
+        if grid[i][M - 1] == 1:
+            dfs(grid, i, M - 1)
+
+    for j in range(M):
+        if grid[0][j] == 1:
+            dfs(grid, 0, j)
+        if grid[N - 1][j] == 1:
+            dfs(grid, N - 1, j)
+
+    for i in range(N):
+        for j in range(M):
+            if grid[i][j] == 1:
+                grid[i][j] = 0
+            if grid[i][j] == 2:
+                grid[i][j] = 1
+    for i in range(N):
+        for j in range(M):
+            if j == M - 1:
+                print(grid[i][j],end="")
+            else:
+                print(grid[i][j],end=" ")
+        print()
+
+if __name__ == '__main__':
+    main()
+6.水流问题
+first = set()
+second = set()
+directions = [[-1, 0], [0, 1], [1, 0], [0, -1]]
+
+def dfs(i, j, graph, visited, side):
+    if visited[i][j]:
+        return
+    
+    visited[i][j] = True
+    side.add((i, j))
+    
+    for x, y in directions:
+        new_x = i + x
+        new_y = j + y
+        if (
+            0 <= new_x < len(graph)
+            and 0 <= new_y < len(graph[0])
+            and int(graph[new_x][new_y]) >= int(graph[i][j])
+        ):
+            dfs(new_x, new_y, graph, visited, side)
+
+def main():
+    global first
+    global second
+    
+    N, M = map(int, input().strip().split())
+    graph = []
+    for _ in range(N):
+        row = input().strip().split()
+        graph.append(row)
+    
+    # 是否可到达第一边界
+    visited = [[False] * M for _ in range(N)]
+    for i in range(M):
+        dfs(0, i, graph, visited, first)
+    for i in range(N):
+        dfs(i, 0, graph, visited, first)
+    
+    # 是否可到达第二边界
+    visited = [[False] * M for _ in range(N)]
+    for i in range(M):
+        dfs(N - 1, i, graph, visited, second)
+    for i in range(N):
+        dfs(i, M - 1, graph, visited, second)
+
+    # 可到达第一边界和第二边界
+    res = first & second
+    
+    for x, y in res:
+        print(f"{x} {y}")
+    
+    
+if __name__ == "__main__":
+    main()
+7.建造最大岛屿
